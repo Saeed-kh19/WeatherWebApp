@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from main.models import City, CityWeatherInfo
+
+admin.site.register(City)
+admin.site.register(CityWeatherInfo)
