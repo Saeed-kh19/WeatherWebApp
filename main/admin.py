@@ -1,8 +1,10 @@
 from django.contrib import admin
+from .models import LoggingModel  # Import the model from 'main'
 
-from main.models import City, CityWeatherInfo
+@admin.register(LoggingModel)
+class LoggingModelAdmin(admin.ModelAdmin):
+    list_display = ('get_user', 'datetime', 'ipaddress', 'endpoint', 'http_method', 'city_name')
 
-admin.site.register(City)
-admin.site.register(CityWeatherInfo)
-
-# first admin:  username:hi / password:hi
+    def get_user(self, obj):
+        return obj.user.username if obj.user else "Anonymous"
+    get_user.short_description = 'User'
