@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'main',
     'api',
     'rest_framework',
-    'rest_framework_api_key'
+    'rest_framework.authtoken',
 ]
 
 # REST_FRAMEWORK = {
@@ -51,6 +51,16 @@ INSTALLED_APPS = [
 #         'rest_framework.permissions.IsAuthenticated',
 #     ),
 # }
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework.authentication.TokenAuthentication',
+#     ),
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.IsAuthenticated',
+#     ),
+# }
+
 
 
 MIDDLEWARE = [
