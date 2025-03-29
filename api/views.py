@@ -1,6 +1,8 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views.generic import ListView
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -55,3 +57,22 @@ class CityWeatherAPIView(APIView):
                     city_weather_serializer = CityWeatherSerializer(city_weather)
 
                     return Response({'city': city_serializer.data, 'latest_weather': city_weather_serializer.data})
+
+# class LoginAPIView(APIView):
+#     def post(self,request,*args,**kwargs):
+#         username = request.data.get("username")
+#         email = request.data.get("email")
+#
+#         if not username or not email:
+#             return Response({'Error': 'username and email is required!'}, status=400)
+#         try:
+#             user = User.objects.get(username__iexact=username,email__iexact=email)
+#             if Token.objects.filter(user=user).exists():
+#                 token = Token.objects.get(user=user)
+#             else:
+#                 token = Token.objects.create(user=user)
+#             return Response({'token': token.key})
+#         except User.DoesNotExist:
+#             return Response({'Error': 'username or email is invalid!'}, status=400)
+#     def get(self,request,*args,**kwargs):
+#         return render(request,'index.html')
