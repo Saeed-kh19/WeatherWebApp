@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f7f9fc;
+      background-color: #f2f3f7;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -16,96 +16,99 @@
     }
 
     .login-container {
-      background: white;
+      background: #ffffff;
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-      width: 400px;
+      width: 100%;
+      max-width: 400px;
       text-align: center;
     }
 
-    .login-container h1 {
-      margin-bottom: 1rem;
-      color: #0056b3;
+    h1 {
+      color: #333;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
     }
 
-    .login-container input {
+    input {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #0056b3;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ddd;
       border-radius: 5px;
     }
 
-    .login-container button {
-      background-color: #0056b3;
+    button {
+      background-color: #007BFF;
       color: white;
-      border: none;
-      padding: 10px;
+      padding: 0.8rem;
       width: 100%;
-      cursor: pointer;
+      border: none;
       border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background-color: #0056b3;
     }
 
     #message {
       margin-top: 1rem;
-      font-size: 1rem;
-    }
-
-    .error-message {
+      font-size: 0.9rem;
       color: red;
-    }
-
-    .success-message {
-      color: green;
     }
   </style>
 </head>
 <body>
   <div class="login-container">
     <h1>Login</h1>
-    <form id="loginForm" method="POST">
-      {% csrf_token %}
-      <input type="text" id="username" name="username" placeholder="Username" required>
-      <input type="email" id="email" name="email" placeholder="Email Address" required>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="email" id="email" placeholder="Email Address" required>
       <button type="submit">Login</button>
     </form>
-    <div id="message"></div> <!-- Div to display messages -->
-    <div id="tokenOutput"></div> <!-- Div to display the token -->
+    <div id="message"></div>
   </div>
 
   <script>
     document.getElementById('loginForm').addEventListener('submit', async function(event) {
-      event.preventDefault(); // Prevent the page from refreshing
+      event.preventDefault();
 
-      const formData = new FormData(event.target); // Collect form data
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
       const messageDiv = document.getElementById('message');
-      const tokenOutput = document.getElementById('tokenOutput'); // Div to show the token
 
-      // Clear previous messages and token
-      messageDiv.innerHTML = '';
-      tokenOutput.innerHTML = '';
+      messageDiv.textContent = ''; // Clear previous messages
 
       try {
         const response = await fetch('/login/', {
           method: 'POST',
-          body: formData, // Send form data directly
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({ username, email }),
         });
 
         const data = await response.json();
 
         if (response.ok) {
-          // Show success message and display the token
-          messageDiv.innerHTML = `<p class="success-message">Login successful!</p>`;
-          tokenOutput.innerHTML = `<p>Token: <strong>${data.token}</strong></p>`;
-          localStorage.setItem('authToken', data.token); // Store token locally
+          messageDiv.style.color = 'green';
+          messageDiv.textContent = 'Login successful! Redirecting...';
+          localStorage.setItem('authToken', data.token); // Store token
+
+          // Redirect to home page
+          setTimeout(() => {
+            window.location.href = '/home';
+          }, 1500);
         } else {
-          // Show error message
-          messageDiv.innerHTML = `<p class="error-message">${data.Error || 'Login failed!'}</p>`;
+          messageDiv.textContent = data.Error || 'Login failed!';
         }
       } catch (error) {
-        console.error('Error during login:', error);
-        messageDiv.innerHTML = `<p class="error-message">An unexpected error occurred.</p>`;
+        console.error('Login Error:', error);
+        messageDiv.textContent = 'An unexpected error occurred.';
       }
     });
   </script>

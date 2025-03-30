@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ city.city_name }} Details</title>
+  <style>
+    /* General Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #222;
+      color: white;
+      height: 100vh;
+      margin: 0;
+      justify-content: center;
+    }
+
+    .detail-card {
+      background: #333;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.7);
+      text-align: center;
+      width: 300px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #63caff;
+    }
+  </style>
+</head>
+<body>
+  <div class="detail-card">
+    <h1>{{ city.city_name }}</h1>
+    <p><strong>Latitude:</strong> {{ city.latitude }}</p>
+    <p><strong>Longitude:</strong> {{ city.longitude }}</p>
+
+    <!-- Example form with CSRF token -->
+    <form method="POST" action="/submit-something/">
+      {% csrf_token %}
+      <button type="submit">Submit</button>
+    </form>
+
+    <a href="/home">Back to Cities</a>
+  </div>
+</body>
+</html>
