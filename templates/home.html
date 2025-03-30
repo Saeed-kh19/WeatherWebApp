@@ -1,202 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>City Explorer</title>
-  <style>
-    /* General Styling */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Arial', sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: #222; /* Dark background */
-      color: #fff; /* White text */
-      height: 100vh;
-      margin: 0;
-    }
+        #message {
+            margin-bottom: 25px;
+        }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-align: center;
-    }
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #222;
+            color: #fff;
+            height: 100vh;
+            margin: 0;
+        }
 
-    #message {
-      font-size: 1rem;
-      margin-top: 1rem;
-      text-align: center;
-    }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
 
-    .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.5rem;
-      width: 80%; /* Keep content centered */
-      max-width: 1000px;
-    }
+        #message {
+            font-size: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
 
-    .card {
-      background-color: #333; /* Slightly lighter than body background */
-      border-radius: 10px;
-      padding: 1rem;
-      width: 250px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            width: 80%;
+            max-width: 1000px;
+        }
 
-    .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.7);
-    }
+        .card {
+            background-color: #333;
+            border-radius: 10px;
+            padding: 1rem;
+            width: 250px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
 
-    .card h2 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      text-align: center;
-    }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.7);
+        }
 
-    .card a {
-      text-decoration: none;
-      color: #1e90ff; /* Link color */
-      font-weight: bold;
-      text-align: center;
-      display: block;
-      margin-top: 0.5rem;
-    }
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
 
-    .card a:hover {
-      color: #63caff; /* Hover effect for links */
-    }
+        .card a {
+            text-decoration: none;
+            color: #1e90ff;
+            font-weight: bold;
+            text-align: center;
+            display: block;
+            margin-top: 0.5rem;
+        }
 
-    .loader {
-      display: none;
-      width: 50px;
-      margin: 2rem auto;
-    }
-  </style>
+        .card a:hover {
+            color: #63caff;
+        }
+
+        .loader {
+            display: none;
+            width: 50px;
+            margin: 2rem auto;
+        }
+    </style>
 </head>
 <body>
-  <h1>City Explorer</h1>
-  <div id="message"></div> <!-- Message area for status updates -->
-  <img id="loader" class="loader" src="https://i.imgur.com/LLF5iyg.gif" alt="Loading"> <!-- Loader icon -->
-  <div class="card-container" id="cityList"></div> <!-- Container for city cards -->
+<h1>City Explorer</h1>
+<div id="message"></div>
+<img id="loader" class="loader" src="https://i.imgur.com/LLF5iyg.gif" alt="Loading">
+<div class="card-container" id="cityList"></div>
 
-  <script>
-   // Fetch cities from the API and display them on the page
-async function fetchCities() {
-  const token = localStorage.getItem('authToken'); // Retrieve authentication token from localStorage
-  const cityListDiv = document.getElementById('cityList'); // Container for city cards
-  const messageDiv = document.getElementById('message'); // Element for status messages
-  const loader = document.getElementById('loader'); // Loader icon
+<script>
+    async function fetchCities() {
+        const token = localStorage.getItem('authToken');
+        const cityListDiv = document.getElementById('cityList');
+        const messageDiv = document.getElementById('message');
+        const loader = document.getElementById('loader');
 
-  if (!token) {
-    messageDiv.textContent = 'No token found. Please log in first.';
-    messageDiv.style.color = '#ff4d4d'; // Display error in red
-    return;
-  }
+        if (!token) {
+            messageDiv.textContent = 'No token found. Please log in first.';
+            messageDiv.style.color = '#ff4d4d';
+            return;
+        }
 
-  loader.style.display = 'block'; // Show the loader while fetching cities
+        loader.style.display = 'block';
 
-  try {
-    const response = await fetch('/api/cities/', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Token ${token}`, // Include the token in the headers
-      },
-    });
+        try {
+            const response = await fetch('/api/cities/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Token ${token}`,
+                },
+            });
 
-    const contentType = response.headers.get('Content-Type');
-    if (contentType && contentType.includes('application/json')) {
-      const data = await response.json(); // Parse the response as JSON
-      loader.style.display = 'none'; // Hide the loader after fetching data
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await response.json();
+                loader.style.display = 'none';
 
-      if (response.ok && data.cities) {
-        messageDiv.textContent = ''; // Clear previous messages
-        cityListDiv.innerHTML = data.cities
-          .map(city => `
+                if (response.ok && data.cities) {
+                    messageDiv.textContent = '';
+                    cityListDiv.innerHTML = data.cities
+                        .map(city => `
             <div class="card">
               <h2>${city.city_name}</h2>
               <a href="#" onclick="fetchWeather('${city.city_name}')">Get Weather</a>
             </div>
           `)
-          .join('');
-      } else {
-        messageDiv.textContent = data.Error || 'Failed to fetch cities.';
-        messageDiv.style.color = '#ff4d4d'; // Display error in red
-      }
-    } else {
-      throw new Error('Invalid JSON response.');
+                        .join('');
+                } else {
+                    messageDiv.textContent = data.Error || 'Failed to fetch cities.';
+                    messageDiv.style.color = '#ff4d4d';
+                }
+            } else {
+                throw new Error('Invalid JSON response.');
+            }
+        } catch (error) {
+            console.error('Fetch Cities Error:', error);
+            loader.style.display = 'none';
+            messageDiv.textContent = 'An error occurred while fetching cities.';
+            messageDiv.style.color = '#ff4d4d';
+        }
     }
-  } catch (error) {
-    console.error('Fetch Cities Error:', error);
-    loader.style.display = 'none'; // Hide the loader on error
-    messageDiv.textContent = 'An error occurred while fetching cities.';
-    messageDiv.style.color = '#ff4d4d'; // Display error in red
-  }
-}
 
-// Fetch weather data for a selected city dynamically
-function fetchWeather(cityName) {
-  const token = localStorage.getItem('authToken'); // Retrieve the authentication token
-  if (!token) {
-    alert('No token found. Please log in first.');
-    return;
-  }
+    function fetchWeather(cityName) {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('No token found. Please log in first.');
+            return;
+        }
 
-  const apiUrl = `/api/weather/${encodeURIComponent(cityName)}/`; // API endpoint for weather data
-  const messageDiv = document.getElementById('message'); // Element for status messages
-  messageDiv.textContent = `Fetching weather data for ${cityName}...`;
-  messageDiv.style.color = 'white'; // Set status text color to white for the loading state
+        const apiUrl = `/api/weather/${encodeURIComponent(cityName)}/`;
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = `Fetching weather data for ${cityName}...`;
+        messageDiv.style.color = 'white';
 
-  fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Token ${token}`, // Include the token in the headers
-      'Content-Type': 'application/json', // Define content type
-    },
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json(); // Parse the JSON response
-      } else if (response.status === 401) {
-        throw new Error('Unauthorized access. Please log in again.');
-      } else {
-        throw new Error('Failed to fetch weather data.');
-      }
-    })
-    .then(data => {
-      if (data.weather) {
-        const weatherInfo = data.weather;
-        // Display weather data dynamically
-        messageDiv.textContent = `Weather for ${cityName}: ${weatherInfo.temperature_celsius}°C, submitted on ${new Date(weatherInfo.date_submitted).toLocaleString()}`;
-        messageDiv.style.color = 'lightgreen'; // Success message in green
-      } else {
-        messageDiv.textContent = data.Error || 'No weather data found!';
-        messageDiv.style.color = 'red'; // Error message in red
-      }
-    })
-    .catch(error => {
-      console.error('Fetch Weather Error:', error);
-      messageDiv.textContent = error.message || 'An error occurred while fetching weather data.';
-      messageDiv.style.color = 'red'; // Error message in red
-    });
-}
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status === 401) {
+                    throw new Error('Unauthorized access. Please log in again.');
+                } else {
+                    throw new Error('Failed to fetch weather data.');
+                }
+            })
+            .then(data => {
+                if (data.weather) {
+                    const weatherInfo = data.weather;
+                    messageDiv.textContent = `Weather for ${cityName}: ${weatherInfo.temperature_celsius}°C, submitted on ${new Date(weatherInfo.date_submitted).toLocaleString()}`;
+                    messageDiv.style.color = 'lightgreen';
+                } else {
+                    messageDiv.textContent = data.Error || 'No weather data found!';
+                    messageDiv.style.color = 'red';
+                }
+            })
+            .catch(error => {
+                console.error('Fetch Weather Error:', error);
+                messageDiv.textContent = error.message || 'An error occurred while fetching weather data.';
+                messageDiv.style.color = 'red';
+            });
+    }
 
-// Automatically fetch cities when the page loads
-window.onload = fetchCities;
+    window.onload = fetchCities;
 
-  </script>
+</script>
 </body>
 </html>

@@ -1,116 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f3f7;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f3f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-    .login-container {
-      background: #ffffff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-    }
+        .login-container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
 
-    h1 {
-      color: #333;
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
+        h1 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
 
-    input {
-      width: 100%;
-      padding: 0.8rem;
-      margin: 0.5rem 0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
 
-    button {
-      background-color: #007BFF;
-      color: white;
-      padding: 0.8rem;
-      width: 100%;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 0.8rem;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
 
-    button:hover {
-      background-color: #0056b3;
-    }
+        button:hover {
+            background-color: #0056b3;
+        }
 
-    #message {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: red;
-    }
-  </style>
+        #message {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: red;
+        }
+        input{
+            margin-left:-13px;
+        }
+    </style>
 </head>
 <body>
-  <div class="login-container">
-    <h1>Login</h1>
+<div class="login-container">
+    <h1>Login to your account</h1>
     <form id="loginForm">
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="email" id="email" placeholder="Email Address" required>
-      <button type="submit">Login</button>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="email" id="email" placeholder="Email Address" required>
+        <button type="submit" style="margin-top: 20px;">Submit</button>
     </form>
     <div id="message"></div>
-  </div>
+</div>
 
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async function(event) {
-      event.preventDefault();
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
 
-      const username = document.getElementById('username').value;
-      const email = document.getElementById('email').value;
-      const messageDiv = document.getElementById('message');
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const messageDiv = document.getElementById('message');
 
-      messageDiv.textContent = ''; // Clear previous messages
+        messageDiv.textContent = '';
 
-      try {
-        const response = await fetch('/login/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({ username, email }),
-        });
+        try {
+            const response = await fetch('/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({username, email}),
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (response.ok) {
-          messageDiv.style.color = 'green';
-          messageDiv.textContent = 'Login successful! Redirecting...';
-          localStorage.setItem('authToken', data.token); // Store token
+            if (response.ok) {
+                messageDiv.style.color = 'green';
+                messageDiv.textContent = 'Login successful! Redirecting...';
+                localStorage.setItem('authToken', data.token)
 
-          // Redirect to home page
-          setTimeout(() => {
-            window.location.href = '/home';
-          }, 1500);
-        } else {
-          messageDiv.textContent = data.Error || 'Login failed!';
+                setTimeout(() => {
+                    window.location.href = '/home';
+                }, 1500);
+            } else {
+                messageDiv.textContent = data.Error || 'Login failed!';
+            }
+        } catch (error) {
+            console.error('Login Error:', error);
+            messageDiv.textContent = 'An unexpected error occurred.';
         }
-      } catch (error) {
-        console.error('Login Error:', error);
-        messageDiv.textContent = 'An unexpected error occurred.';
-      }
     });
-  </script>
+</script>
 </body>
 </html>
