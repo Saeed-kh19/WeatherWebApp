@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 
 
-@method_decorator(csrf_exempt, name='dispatch')  # Exempt CSRF for POST requests
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'index.html')
